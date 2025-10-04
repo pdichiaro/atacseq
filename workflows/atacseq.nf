@@ -358,20 +358,22 @@ workflow ATACSEQ {
     //
     // MODULE: Phantompeaktools strand cross-correlation and QC metrics
     //
-    PHANTOMPEAKQUALTOOLS (
-        ch_final_bam
-    )
-    ch_versions = ch_versions.mix(PHANTOMPEAKQUALTOOLS.out.versions.first())
+    if (!params.skip_spp) {
+        PHANTOMPEAKQUALTOOLS (
+            ch_final_bam
+        )
+        ch_versions = ch_versions.mix(PHANTOMPEAKQUALTOOLS.out.versions.first())
 
-    //
-    // MODULE: MultiQC custom content for Phantompeaktools
-    //
-    MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS (
-        PHANTOMPEAKQUALTOOLS.out.spp.join(PHANTOMPEAKQUALTOOLS.out.rdata, by: [0]),
-        ch_spp_nsc_header,
-        ch_spp_rsc_header,
-        ch_spp_correlation_header
-    )
+        //
+        // MODULE: MultiQC custom content for Phantompeaktools
+        //
+        MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS (
+            PHANTOMPEAKQUALTOOLS.out.spp.join(PHANTOMPEAKQUALTOOLS.out.rdata, by: [0]),
+            ch_spp_nsc_header,
+            ch_spp_rsc_header,
+            ch_spp_correlation_header
+        )
+    }
 
 
     //
