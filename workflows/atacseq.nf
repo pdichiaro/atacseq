@@ -84,6 +84,7 @@ include { BLACKLIST_LOG                       } from '../modules/local/blacklist
 include { INPUT_CHECK         } from '../subworkflows/local/input_check'
 include { PREPARE_GENOME      } from '../subworkflows/local/prepare_genome'
 include { BAM_FILTER as BAM_FILTER_SUBWF } from '../subworkflows/local/bam_filter'
+include { BAM_SHIFT_READS     } from '../subworkflows/local/bam_shift_reads'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -299,14 +300,35 @@ workflow ATACSEQ {
     ch_versions = ch_versions.mix(BAM_FILTER_SUBWF.out.versions.first().ifEmpty(null))
 
     //
+    // SUBWORKFLOW: Shift reads to account for Tn5 binding offset (+4/-5 bp)
+    //
+    if (params.shift_reads) {
+        BAM_SHIFT_READS (
+            BAM_FILTER_SUBWF.out.bam.join(BAM_FILTER_SUBWF.out.bai, by: [0]),
+            params.minFragmentLength,
+            params.maxFragmentLength
+        )
+        ch_final_bam = BAM_SHIFT_READS.out.bam
+        ch_final_bai = BAM_SHIFT_READS.out.bai
+        ch_final_csi = BAM_SHIFT_READS.out.csi
+        ch_final_flagstat = BAM_SHIFT_READS.out.flagstat
+        ch_versions = ch_versions.mix(BAM_SHIFT_READS.out.versions.first().ifEmpty(null))
+    } else {
+        ch_final_bam = BAM_FILTER_SUBWF.out.bam
+        ch_final_bai = BAM_FILTER_SUBWF.out.bai
+        ch_final_csi = BAM_FILTER_SUBWF.out.csi
+        ch_final_flagstat = BAM_FILTER_SUBWF.out.flagstat
+    }
+
+    //
     // MODULE: Generate filtering metrics log (blacklist + duplicates + other filters)
     //
     if (params.blacklist) {
         // Join all channels by meta to ensure correct pairing
         ch_blacklist_input = MARK_DUPLICATES_PICARD.out.bam
             .join(MARK_DUPLICATES_PICARD.out.bai, by: [0])
-            .join(BAM_FILTER_SUBWF.out.bam, by: [0])
-            .join(BAM_FILTER_SUBWF.out.bai, by: [0])
+            .join(ch_final_bam, by: [0])
+            .join(ch_final_bai, by: [0])
             .map { meta, bam_before, bai_before, bam_after, bai_after ->
                 tuple(meta, bam_before, bai_before, bam_after, bai_after)
             }
@@ -325,7 +347,7 @@ workflow ATACSEQ {
     ch_picardcollectmultiplemetrics_multiqc = Channel.empty()
     if (!params.skip_picard_metrics) {
         PICARD_COLLECTMULTIPLEMETRICS (
-            BAM_FILTER_SUBWF.out.bam,
+            ch_final_bam,
             PREPARE_GENOME.out.fasta,
             []
         )
@@ -337,7 +359,7 @@ workflow ATACSEQ {
     // MODULE: Phantompeaktools strand cross-correlation and QC metrics
     //
     PHANTOMPEAKQUALTOOLS (
-        BAM_FILTER_SUBWF.out.bam
+        ch_final_bam
     )
     ch_versions = ch_versions.mix(PHANTOMPEAKQUALTOOLS.out.versions.first())
 
@@ -357,10 +379,8 @@ workflow ATACSEQ {
     // Differently from standard nf-core atacseq we can evaluate the possibility to run the chip-seq w/o inputs
     // This needs to be assessed on the fly i.e. check if there ar
     
-    BAM_FILTER_SUBWF
-        .out
-        .bam
-        .join(BAM_FILTER_SUBWF.out.bai, by: [0])
+    ch_final_bam
+        .join(ch_final_bai, by: [0])
         .set { ch_genome_bam_bai }
 
     //

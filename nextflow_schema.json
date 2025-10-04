@@ -237,6 +237,24 @@
                     "default": false,
                     "fa_icon": "fas fa-dna"
                 },
+                "shift_reads": {
+                    "type": "boolean",
+                    "description": "Shift aligned reads to account for Tn5 transposase binding (+4 bp for forward strand, -5 bp for reverse strand). This adjusts read positions to the actual Tn5 binding sites.",
+                    "default": false,
+                    "fa_icon": "fas fa-arrows-alt-h"
+                },
+                "minFragmentLength": {
+                    "type": "integer",
+                    "description": "Minimum fragment length to select when shifting reads with deepTools alignmentSieve. Only used if --shift_reads is enabled.",
+                    "default": 0,
+                    "fa_icon": "fas fa-ruler"
+                },
+                "maxFragmentLength": {
+                    "type": "integer",
+                    "description": "Maximum fragment length to select when shifting reads with deepTools alignmentSieve. Only used if --shift_reads is enabled.",
+                    "default": 120,
+                    "fa_icon": "fas fa-ruler"
+                },
                 "keep_blacklist": {
                     "type": "boolean",
                     "description": "Whether to keep or not blacklist regions",
