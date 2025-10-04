@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/pdichiaro/atacseq/main/assets/schema_input.json",
+    "title": "pdichiaro/atacseq pipeline - params.input schema",
+    "description": "Schema for the samplesheet file provided with params.input. Follows nf-core ATAC-seq standard format.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_.-]+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces. Use only alphanumeric characters, underscores, dots, and dashes.",
+                "meta": ["sample"]
+            },
+            "fastq_1": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "exists": true
+            },
+            "fastq_2": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'. Leave empty for single-end data."
+            },
+            "replicate": {
+                "type": "integer",
+                "minimum": 1,
+                "errorMessage": "Replicate number must be a positive integer (1, 2, 3, ...)",
+                "meta": ["replicate"]
+            },
+            "antibody": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_.-]*$",
+                "errorMessage": "Antibody/target name. Use alphanumeric characters, underscores, dots, and dashes. Leave empty for input/control samples.",
+                "meta": ["antibody"]
+            },
+            "control": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_.-]*$",
+                "errorMessage": "Control sample name must match a sample name in the 'sample' column. Leave empty for input samples.",
+                "meta": ["control"]
+            },
+            "control_replicate": {
+                "type": "integer",
+                "minimum": 1,
+                "errorMessage": "Control replicate number must be a positive integer matching the replicate column of the control sample. Leave empty for input samples.",
+                "meta": ["control_replicate"]
+            }
+        },
+        "required": ["sample", "fastq_1", "replicate"]
+    }
+}

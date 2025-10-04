@@ -1,0 +1,12 @@
+#id: 'deseq2_pca_plot'
+#section_name: 'PCA Plot'
+#section_anchor: 'deseq2-featurecounts-qc'
+#description: "Principal Component Analysis plot showing sample relationships.
+#              Values are calculated using <a href='https://bioconductor.org/packages/release/bioc/html/DESeq2.html' target='_blank'>DESeq2</a>
+#              variance-stabilizing transformation."
+#plot_type: 'scatter'
+#pconfig:
+#    title: 'DESeq2: Principal Component Analysis'
+#    xlab: 'PC1'
+#    ylab: 'PC2'
+

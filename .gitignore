@@ -1,0 +1,36 @@
+# Nextflow temporary files
+.nextflow/
+.nextflow.log*
+nxf-tmp.*
+work/
+results/
+null/
+
+# Pipeline outputs
+pipeline_info/
+multiqc_data/
+multiqc_report.html
+
+# Temporary and backup files
+*.swp
+*.swo
+*~
+.DS_Store
+*.bak
+.Rhistory
+
+# Generated documentation
+CONVERSION_NOTES.md
+STAR_UPDATE_SUMMARY.md
+STAR_VERSION_COMPARISON.md
+
+# Test files and reports
+TEST_REPORT.md
+test_samplesheet.csv
+test_skip_qc/
+test_results/
+
+# IDE files
+.idea/
+.vscode/
+*.iml

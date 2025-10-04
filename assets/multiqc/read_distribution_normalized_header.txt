@@ -1,0 +1,16 @@
+#id: 'read_distribution_normalized'
+#section_name: 'Read Distribution (Normalized)'
+#section_anchor: 'deseq2-featurecounts-qc'
+#description: "Distribution of normalized read counts across all genes for each sample.
+#              Values are variance-stabilized transformation (VST) normalized using 
+#              <a href='https://bioconductor.org/packages/release/bioc/html/DESeq2.html' target='_blank'>DESeq2</a>.
+#              Use plot controls to toggle between boxplot, violin, and beeswarm views."
+#plot_type: 'table'
+#pconfig:
+#    title: 'DESeq2: Normalized Read Distribution'
+#    scale: false
+#    plot_type: 'box'
+#    orientation: 'v'
+#    xlab: 'Sample'
+#    ylab: 'Normalized Expression (log2)'
+

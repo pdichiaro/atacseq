@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
+SAMPLE1_H3K27ac_rep1,data/sample1_rep1_R1.fastq.gz,data/sample1_rep1_R2.fastq.gz,1,H3K27ac,,
+SAMPLE1_H3K27ac_rep2,data/sample1_rep2_R1.fastq.gz,data/sample1_rep2_R2.fastq.gz,2,H3K27ac,,
+SAMPLE2_H3K4me3_rep1,data/sample2_rep1_R1.fastq.gz,data/sample2_rep1_R2.fastq.gz,1,H3K4me3,,
+SAMPLE2_H3K4me3_rep2,data/sample2_rep2_R1.fastq.gz,data/sample2_rep2_R2.fastq.gz,2,H3K4me3,,

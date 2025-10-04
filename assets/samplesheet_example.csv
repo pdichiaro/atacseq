@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
+WT_BCATENIN_IP,data/IP_rep1_R1.fastq.gz,data/IP_rep1_R2.fastq.gz,1,BCATENIN,WT_INPUT,1
+WT_BCATENIN_IP,data/IP_rep2_R1.fastq.gz,data/IP_rep2_R2.fastq.gz,2,BCATENIN,WT_INPUT,2
+WT_INPUT,data/input_rep1_R1.fastq.gz,data/input_rep1_R2.fastq.gz,1,,,
+WT_INPUT,data/input_rep2_R1.fastq.gz,data/input_rep2_R2.fastq.gz,2,,,
