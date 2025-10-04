@@ -909,7 +909,7 @@ workflow ATACSEQ {
     //
     // MODULE: Invariant genes normalization (stable genes only)
     //
-    if (normalization_methods.contains('invariant_genes')) {
+    if (!params.skip_deseq2_qc && normalization_methods.contains('invariant_genes')) {
         NORMALIZE_DESEQ2_QC_INVARIANT_GENES (
             SUBREAD_FEATURECOUNTS.out.counts.map { meta, counts -> counts },
             "featureCounts",
@@ -948,7 +948,7 @@ workflow ATACSEQ {
     //
     // MODULE: All genes normalization (default DESeq2 method)
     //
-    if (normalization_methods.contains('all_genes')) {
+    if (!params.skip_deseq2_qc && normalization_methods.contains('all_genes')) {
         NORMALIZE_DESEQ2_QC_ALL_GENES (
             SUBREAD_FEATURECOUNTS.out.counts.map { meta, counts -> counts },
             "featureCounts",
@@ -987,21 +987,23 @@ workflow ATACSEQ {
     //
     // MODULE: Transform DESeq2 files for MultiQC with proper headers
     //
-    DESEQ2_TRANSFORM (
-        ch_deseq2_raw_files.flatten(),
-        ch_deseq2_pca_header,
-        ch_deseq2_clustering_header,
-        ch_deseq2_read_dist_header
-    )
-    ch_versions = ch_versions.mix(DESEQ2_TRANSFORM.out.versions.first())
-    
-    // Populate MultiQC channels with transformed DESeq2 files
-    // Separate files into 3 channels, then combine and sort at the end
-    // Pass all DESeq2 files to MultiQC - they are already numbered (01_, 02_, etc.) by DESEQ2_TRANSFORM
-    // MultiQC will sort them alphabetically by filename, preserving the numeric order
-    ch_deseq2_all_multiqc = DESEQ2_TRANSFORM.out.multiqc_files.flatten()
+    if (!params.skip_deseq2_qc) {
+        DESEQ2_TRANSFORM (
+            ch_deseq2_raw_files.flatten(),
+            ch_deseq2_pca_header,
+            ch_deseq2_clustering_header,
+            ch_deseq2_read_dist_header
+        )
+        ch_versions = ch_versions.mix(DESEQ2_TRANSFORM.out.versions.first())
+        
+        // Populate MultiQC channels with transformed DESeq2 files
+        // Separate files into 3 channels, then combine and sort at the end
+        // Pass all DESeq2 files to MultiQC - they are already numbered (01_, 02_, etc.) by DESEQ2_TRANSFORM
+        // MultiQC will sort them alphabetically by filename, preserving the numeric order
+        ch_deseq2_all_multiqc = DESEQ2_TRANSFORM.out.multiqc_files.flatten()
 
-    ch_versions = ch_versions.mix(ch_normalization_versions)
+        ch_versions = ch_versions.mix(ch_normalization_versions)
+    }
 
     // Assemble the channel 
     // Given a tab separated matrix with the first column : Sample_id, Scaling_factor convert the matrix to a channel with [Sample_id, Scaling_factor] pairs
@@ -1075,7 +1077,7 @@ workflow ATACSEQ {
         //
         // MODULE: DESeq2 normalized BigWig coverage tracks - invariant genes
         //
-        if (normalization_methods.contains('invariant_genes')) {
+        if (!params.skip_deseq2_qc && normalization_methods.contains('invariant_genes')) {
             DEEPTOOLS_BIGWIG_NORM_INVARIANT (
                 ch_bam_bai_scale_invariant
             )
@@ -1086,7 +1088,7 @@ workflow ATACSEQ {
         //
         // MODULE: DESeq2 normalized BigWig coverage tracks - all genes
         //
-        if (normalization_methods.contains('all_genes')) {
+        if (!params.skip_deseq2_qc && normalization_methods.contains('all_genes')) {
             DEEPTOOLS_BIGWIG_NORM_ALL_GENES (
                 ch_bam_bai_scale_all_genes
             )
