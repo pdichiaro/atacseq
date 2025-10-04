@@ -116,7 +116,7 @@
                 "macs_model": {
                     "type": "boolean",
                     "description": "Build the shifting model for MACS2. If set to false, automatically applies a cascade of parameters.",
-                    "help_text": "By default, MACS2 builds a shifting model to estimate fragment size. Setting this to false will automatically apply: --nomodel --extsize 300 --nolambda --call-summits. This cascade is useful for ATAC-seq or when fragment size estimation fails.",
+                    "help_text": "By default, MACS2 builds a shifting model to estimate fragment size. Setting this to false will automatically apply: --nomodel --extsize 146 --nolambda --call-summits. This cascade is useful for ATAC-seq or when fragment size estimation fails.",
                     "default": true,
                     "fa_icon": "fas fa-chart-line"
                 },
@@ -317,7 +317,7 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Build the shifting model for MACS2. If set to false, automatically applies a cascade of parameters.",
-                    "help_text": "By default, MACS2 builds a shifting model to estimate fragment size. Setting this to false will automatically apply: --nomodel --extsize 300 --nolambda --call-summits. This cascade is useful for ATAC-seq or when fragment size estimation fails.",
+                    "help_text": "By default, MACS2 builds a shifting model to estimate fragment size. Setting this to false will automatically apply: --nomodel --extsize 146 --nolambda --call-summits. This cascade is useful for ATAC-seq or when fragment size estimation fails.",
                     "fa_icon": "fas fa-chart-line"
                 },
                 "save_macs_pileup": {
