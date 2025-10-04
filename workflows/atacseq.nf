@@ -52,8 +52,6 @@ ch_deseq2_pca_header        = file("$projectDir/assets/multiqc/deseq2_pca_header
 ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 ch_deseq2_read_dist_header  = file("$projectDir/assets/multiqc/read_distribution_normalized_header.txt", checkIfExists: true)
 
-ch_with_inputs = params.with_inputs ? params.with_inputs.toBoolean() : false
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -370,73 +368,30 @@ workflow ATACSEQ {
         ch_versions = ch_versions.mix(DEEPTOOLS_PLOTFINGERPRINT.out.versions.first())
     }
     
-    if(!ch_with_inputs){
-
-       println "The value of ch_with_inputs set to w-o input: ${ch_with_inputs}"
-        // Create channels: [ meta, ip_bam, ([] for control_bam) ]
-        ch_genome_bam_bai
-            .map {
-                meta, bam, bai -> 
-                    !meta.is_input ? [ meta , bam, [] ] : null
-            }
-            .set { ch_ip_control_bam }
-        
-        // w/o inputs we simply merge all bams by antibody: from meta,bam,bai 
-        ch_ip_control_bam
-            .map {
-                meta, bam1, bam2 ->
-                def new_meta = meta.clone()
-                new_meta.id =  meta.antibody
-                [new_meta, bam1, bam2]
-            }
-            .groupTuple(by: 0)
-            .map {
-                meta, bam1, bam2 ->
-                    [ meta , bam1, [] ]
-            }
-            .set { ch_antibody_bam }
-            
-            ch_antibody_bam.view()
-        
-    }else{ 
-        println "The value of ch_with_inputs set to with the input: ${ch_with_inputs}"
-
-        // Combine IP samples with their corresponding input controls
-        // Use cartesian product and filter with ternary operator (returns null for non-matches)
-        ch_genome_bam_bai
-            .combine(ch_genome_bam_bai)
-            .filter { meta1, bam1, bai1, meta2, bam2, bai2 ->
-                // Only keep valid pairings: IP sample with its designated input control
-                !meta1.is_input && meta2.is_input && meta1.which_input == meta2.id
-            }
-            .map { meta1, bam1, bai1, meta2, bam2, bai2 ->
-                // DEBUG: Log successful matches
-                println "✓✓✓ MATCH: IP ${meta1.id} (which_input='${meta1.which_input}') + Control ${meta2.id}"
-                
-                // Return the paired BAM files (we don't need BAI files for MACS2)
-                [ meta1, bam1, bam2 ]
-            }
-            .set { ch_ip_control_bam }
-
-        // w inputs we simply merge all bams by antibody: from meta,bam,bai - we combine the samples and the inputs:
-        // we start from the paired and we group it:
-        ch_ip_control_bam
-            .map {
-                meta, bam1, bam2 ->
-                def new_meta = meta.clone()
-                new_meta.id =  meta.antibody
-                [new_meta, bam1, bam2]
-            }
-            .groupTuple(by: 0)
-            .map {
-                meta, bam1, bam2 ->
-                    // Deduplicate control BAMs (multiple IP samples may share the same control)
-                    def unique_bam2 = bam2.unique()
-                    [ meta , bam1, unique_bam2 ]
-            }
-            .set { ch_antibody_bam }
-
-    }
+    // Create channels: [ meta, ip_bam, ([] for control_bam) ]
+    // Always pass empty array as control (no input controls support)
+    ch_genome_bam_bai
+        .map {
+            meta, bam, bai -> 
+                [ meta , bam, [] ]
+        }
+        .set { ch_ip_control_bam }
+    
+    // Merge all bams by antibody: from meta,bam,control 
+    ch_ip_control_bam
+        .map {
+            meta, bam1, bam2 ->
+            def new_meta = meta.clone()
+            new_meta.id =  meta.antibody
+            [new_meta, bam1, bam2]
+        }
+        .groupTuple(by: 0)
+        .map {
+            meta, bam1, bam2 ->
+                [ meta , bam1, [] ]
+        }
+        .set { ch_antibody_bam }
+    
     // 
     // MODULE: Calculute genome size with khmer
     //
@@ -457,8 +412,7 @@ workflow ATACSEQ {
 
     //
     // MODULE: Call peaks with MACS2
-    // MACS2_CALLPEAK_SINGLE should run on individual samples (ch_ip_control_bam)
-    // regardless of --with_input setting
+    // MACS2_CALLPEAK_SINGLE runs on individual samples (ch_ip_control_bam)
     //
     MACS2_CALLPEAK_SINGLE (
          ch_ip_control_bam,
@@ -1042,10 +996,8 @@ workflow ATACSEQ {
         }
     
     // Create combined channel for invariant genes
-    // Filter out Input samples - they should not be normalized
-    // Prepare BAM channel for deeptools - filter out Input samples
+    // Prepare BAM channel for deeptools
     ch_bam_for_deeptools = ch_genome_bam_bai
-        .filter { meta, bam, bai -> !meta.is_input }
 
     // CHANNEL OPERATION: Combine BAM files with scaling factors for invariant genes
     // Use .combine() to create cartesian product, then filter by matching sample IDs

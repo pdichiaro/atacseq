@@ -25,10 +25,6 @@ def create_fastq_channel(LinkedHashMap row) {
     def meta = [:]
     meta.id         = row.sample
     meta.single_end = row.single_end ? (row.single_end.toString() == '1' || row.single_end.toString().toLowerCase() == 'true') : false
-    meta.is_input   = row.is_input ? (row.is_input.toString().toLowerCase() == 'true' || row.is_input.toString() == '1') : false
-    // Remove _T\d+ suffix from which_input to match how meta.id is transformed later in the pipeline
-    def which_input_raw = row.which_input ?: ''
-    meta.which_input   = which_input_raw ? which_input_raw.replaceAll(/_[^_]+$/, '') : ''
     meta.antibody   = row.antibody ?: ''
 
     // add path(s) of the fastq file(s) to the meta map

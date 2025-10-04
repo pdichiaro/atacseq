@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2,replicate,antibody
+WT_H3K4me3_IP,data/WT_H3K4me3_rep1_R1.fastq.gz,data/WT_H3K4me3_rep1_R2.fastq.gz,1,H3K4me3
+WT_H3K4me3_IP,data/WT_H3K4me3_rep2_R1.fastq.gz,data/WT_H3K4me3_rep2_R2.fastq.gz,2,H3K4me3
+WT_H3K27ac_IP,data/WT_H3K27ac_rep1_R1.fastq.gz,data/WT_H3K27ac_rep1_R2.fastq.gz,1,H3K27ac
+WT_H3K27ac_IP,data/WT_H3K27ac_rep2_R1.fastq.gz,data/WT_H3K27ac_rep2_R2.fastq.gz,2,H3K27ac

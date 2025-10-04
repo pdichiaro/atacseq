@@ -120,13 +120,6 @@
                     "default": true,
                     "fa_icon": "fas fa-chart-line"
                 },
-                "with_inputs": {
-                    "type": "boolean",
-                    "description": "Whether or not input are included",
-                    "help_text": "Whether to use inputs or not. In case turned to yes all samples lacking the inputs are going to be dropped",
-                    "default": false,
-                    "fa_icon": "fas fa-save"
-                },
                 "blacklist": {
                     "type": "string",
                     "description": "Path to blacklist regions in BED format, used for filtering alignments.",

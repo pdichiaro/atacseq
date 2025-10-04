@@ -35,20 +35,8 @@
             "antibody": {
                 "type": "string",
                 "pattern": "^[a-zA-Z0-9_.-]*$",
-                "errorMessage": "Antibody/target name. Use alphanumeric characters, underscores, dots, and dashes. Leave empty for input/control samples.",
+                "errorMessage": "Antibody/target name. Use alphanumeric characters, underscores, dots, and dashes.",
                 "meta": ["antibody"]
-            },
-            "control": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9_.-]*$",
-                "errorMessage": "Control sample name must match a sample name in the 'sample' column. Leave empty for input samples.",
-                "meta": ["control"]
-            },
-            "control_replicate": {
-                "type": "integer",
-                "minimum": 1,
-                "errorMessage": "Control replicate number must be a positive integer matching the replicate column of the control sample. Leave empty for input samples.",
-                "meta": ["control_replicate"]
             }
         },
         "required": ["sample", "fastq_1", "replicate"]
