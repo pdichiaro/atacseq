@@ -149,10 +149,17 @@ workflow ATACSEQ {
     def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
     //
+    // Get mitochondrial chromosome name from genome config
+    //
+    def mito_name = params.genomes && params.genome && params.genomes[params.genome] ? 
+        params.genomes[params.genome].mito_name : null
+    
+    //
     // SUBWORKFLOW: Uncompress and prepare reference genome files
     //
     PREPARE_GENOME (
-        params.aligner
+        params.aligner,
+        mito_name
     )
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
     

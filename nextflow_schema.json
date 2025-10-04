@@ -231,6 +231,12 @@
                     "description": "Keep multi-mapping reads. If false (default), Bowtie2 uses default mode (assigns MAPQ=0 to multi-mappers) and 'samtools view -q 1' removes them. If true, Bowtie2 reports up to 100 alignments per read (-k 100) and no MAPQ filtering is applied.",
                     "fa_icon": "fas fa-cart-arrow-down"
                 },
+                "keep_mito": {
+                    "type": "boolean",
+                    "description": "Keep mitochondrial reads (chrM/MT/Mt). If false (default), mitochondrial reads are removed from analysis as they can dominate ATAC-seq signal and distort normalization.",
+                    "default": false,
+                    "fa_icon": "fas fa-dna"
+                },
                 "keep_blacklist": {
                     "type": "boolean",
                     "description": "Whether to keep or not blacklist regions",

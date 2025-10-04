@@ -21,6 +21,7 @@ include { GENOME_BLACKLIST_REGIONS } from '../../modules/local/genome_blacklist_
 workflow PREPARE_GENOME {
     take:
     prepare_tool_index // string  : tool to prepare index for
+    mito_name          // string  : mitochondrial chromosome name (e.g., 'MT', 'chrM', 'Mt')
 
     main:
 
@@ -118,6 +119,8 @@ workflow PREPARE_GENOME {
     GENOME_BLACKLIST_REGIONS (
         CUSTOM_GETCHROMSIZES.out.sizes,
         ch_blacklist.ifEmpty([]),
+        mito_name,
+        params.keep_mito,
         params.keep_blacklist
     )
     ch_genome_filtered_bed = GENOME_BLACKLIST_REGIONS.out.bed
