@@ -39,11 +39,11 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │                                                                   │
 │  Sets FLAG 0x0400 for duplicate reads                             │
 │                                                                   │
-│  Output: sample.mkD.bam (duplicates MARKED)                       │
+│  Output: sample.mLb.mkD.sorted.bam (duplicates MARKED)                       │
 └───────────────────────────────────────────────────────────────────┘
          │
          ▼
-    sample.mkD.bam
+    sample.mLb.mkD.sorted.bam
     ├─ All aligned reads
     ├─ FLAG 0x0400 on duplicates
     └─ Metrics: sample.mkD.MarkDuplicates.metrics.txt
@@ -115,14 +115,22 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │  STEP 4: BAM_SORT_SAMTOOLS                                        │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
 │                                                                   │
-│  samtools sort sample.filter2.bam > sample.filter2.sorted.bam     │
-│  samtools index sample.filter2.sorted.bam                         │
+│  samtools sort sample.filter2.bam > sample.mLb.clN.sorted.bam     │
+│  samtools index sample.mLb.clN.sorted.bam                         │
 │                                                                   │       
 └───────────────────────────────────────────────────────────────────┘
 ```
 
 ---
+##  BAM outputs
+sample.mLb.mkD.sorted.bam (if params.save_align_intermeds=true)
+    ├─ All aligned reads
+    ├─ FLAG 0x0400 on duplicates
 
+sample.mLb.clN.sorted.bam
+    ├─ Final filtered output
+
+---
 ## 🔑 Key SAMtools Commands
 
 ### BAM_FILTER Implementation: 2-Pass Filtering
