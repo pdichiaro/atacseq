@@ -31,6 +31,7 @@ process MULTIQC {
     path ('alignment/mergedLibrary/filtered/*')
     path ('alignment/mergedLibrary/filtered/*')
     path ('alignment/mergedLibrary/filtered/picard_metrics/*')
+    path ('alignment/mergedLibrary/filtered/preseq/*')
 
     path ('deeptools/*')
     path ('deeptools/*')
