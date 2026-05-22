@@ -98,6 +98,7 @@ include { BAM_SHIFT_READS     } from '../subworkflows/local/bam_shift_reads'
 
 include { PICARD_MERGESAMFILES          } from '../modules/nf-core/modules/picard/mergesamfiles/main'
 include { PICARD_COLLECTMULTIPLEMETRICS } from '../modules/nf-core/modules/picard/collectmultiplemetrics/main'
+include { PRESEQ_LCEXTRAP              } from '../modules/nf-core/modules/preseq/lcextrap/main'
 include { PHANTOMPEAKQUALTOOLS          } from '../modules/nf-core/modules/phantompeakqualtools/main'
 include { DEEPTOOLS_BIGWIG              } from '../modules/local/deeptools_bw'
 include { DEEPTOOLS_BIGWIG_NORM         } from '../modules/local/deeptools_bw_norm'
@@ -353,6 +354,18 @@ workflow ATACSEQ {
         )
         ch_picardcollectmultiplemetrics_multiqc = PICARD_COLLECTMULTIPLEMETRICS.out.metrics
         ch_versions = ch_versions.mix(PICARD_COLLECTMULTIPLEMETRICS.out.versions.first())
+    }
+
+    //
+    // MODULE: Preseq library complexity
+    //
+    ch_preseq_multiqc = Channel.empty()
+    if (!params.skip_preseq) {
+        PRESEQ_LCEXTRAP (
+            MARK_DUPLICATES_PICARD.out.bam
+        )
+        ch_preseq_multiqc = PRESEQ_LCEXTRAP.out.lc_extrap
+        ch_versions = ch_versions.mix(PRESEQ_LCEXTRAP.out.versions.first())
     }
 
     //
@@ -1169,7 +1182,8 @@ workflow ATACSEQ {
             BAM_FILTER_SUBWF.out.flagstat.collect{it[1]}.ifEmpty([]),
             BAM_FILTER_SUBWF.out.idxstats.collect{it[1]}.ifEmpty([]),
             ch_picardcollectmultiplemetrics_multiqc.collect{it[1]}.ifEmpty([]),
-    
+            ch_preseq_multiqc.collect{it[1]}.ifEmpty([]),
+
             ch_deeptoolsplotprofile_multiqc.collect{it[1]}.ifEmpty([]),
             ch_deeptoolsplotfingerprint_multiqc.collect{it[1]}.ifEmpty([]),
     
