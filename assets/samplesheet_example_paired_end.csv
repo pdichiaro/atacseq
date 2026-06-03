@@ -1,7 +1,0 @@
-sample,fastq_1,fastq_2,replicate
-CONTROL,data/CONTROL_rep1_R1.fastq.gz,data/CONTROL_rep1_R2.fastq.gz,1
-CONTROL,data/CONTROL_rep2_R1.fastq.gz,data/CONTROL_rep2_R2.fastq.gz,2
-TREATMENT_WT,data/WT_rep1_R1.fastq.gz,data/WT_rep1_R2.fastq.gz,1
-TREATMENT_WT,data/WT_rep2_R1.fastq.gz,data/WT_rep2_R2.fastq.gz,2
-TREATMENT_KO,data/KO_rep1_R1.fastq.gz,data/KO_rep1_R2.fastq.gz,1
-TREATMENT_KO,data/KO_rep2_R1.fastq.gz,data/KO_rep2_R2.fastq.gz,2
