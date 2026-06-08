@@ -70,7 +70,10 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │  │                                                              │ │
 │  │ Where include_regions.bed is created by:                     │ │
 │  │   bedtools complement -i blacklist.bed -g genome.sizes       │ │
-│  │                                                              │ │
+│  │                                                              | |
+|  | Important: It also applies chrM removal if keep_mito = false | |
+|  |       include_regions.bed without chrM and blacklist regions | |
+|  |                                                              │ │
 │  │ Output: sample.filter1.bam                                   │ │
 │  └─────────────────────────────────────────────────────────────┘  │
 │                                                                   │
