@@ -26,8 +26,7 @@ workflow BAM_SHIFT_READS {
     // Sort shifted reads
     //
     SAMTOOLS_SORT (
-        DEEPTOOLS_ALIGNMENTSIEVE.out.bam,
-        [[],[]]  // No reference fasta needed for coordinate sorting
+        DEEPTOOLS_ALIGNMENTSIEVE.out.bam
     )
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
 
