@@ -112,7 +112,30 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
          │
          ▼
 ┌───────────────────────────────────────────────────────────────────┐
-│  STEP 4: BAM_SORT_SAMTOOLS                                        │
+│  STEP 4: BAM_SHIFT_READS                                          │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
+│                                                                   │
+│  alignmentSieve --ATACshift \                                     |
+|                 --minFragmentLength ${params.minFragmentLength} \ |
+|                 --maxFragmentLength ${params.maxFragmentLength} \ |
+|                 -b sample.filter2.bam \                           |
+|                 -o sample.filter2_as.bam \                        |
+|                 --filterMetrics sample_log.txt                    |
+|                                                                   |
+| When shifting (params.shift_reads = true) is enabled, deepTools   |
+| alignmentSieve is run for Tn5 shifting +4 / -5 bp.                |
+|                                                                   |
+|  Output: sample.filter2_as.bam                                    |
+└───────────────────────────────────────────────────────────────────┘
+         │
+         ▼
+    sample.filter2_as.bam 
+    ├─ shifted bam
+    ├─ Fragments 0-120bp  ?
+         │
+         ▼
+┌───────────────────────────────────────────────────────────────────┐
+│  STEP 5: BAM_SORT_SAMTOOLS                                        │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
 │                                                                   │
 │  samtools sort sample.filter2.bam > sample.mLb.clN.sorted.bam     │
