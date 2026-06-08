@@ -39,7 +39,7 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │                                                                   │
 │  Sets FLAG 0x0400 for duplicate reads                             │
 │                                                                   │
-│  Output: sample.mLb.mkD.sorted.bam (duplicates MARKED)                       │
+│  Output: sample.mLb.mkD.sorted.bam (duplicates MARKED)            │
 └───────────────────────────────────────────────────────────────────┘
          │
          ▼
@@ -125,13 +125,17 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 | When shifting (params.shift_reads = true) is enabled, deepTools   |
 | alignmentSieve is run for Tn5 shifting +4 / -5 bp.                |
 |                                                                   |
-|  Output: sample.filter2_as.bam                                    |
+|                                                                   |
+| Important: It also applies an fragment-length filter of 0–120 bp  |
+|            for nucleosome-free enriched ATAC.                     |
+|                                                                   |
+| Output: sample.filter2_as.bam                                     |
 └───────────────────────────────────────────────────────────────────┘
          │
          ▼
     sample.filter2_as.bam 
     ├─ shifted bam
-    ├─ Fragments 0-120bp  ?
+    ├─ Fragments 0-120bp (NFR)
          │
          ▼
 ┌───────────────────────────────────────────────────────────────────┐
