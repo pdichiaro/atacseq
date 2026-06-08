@@ -153,8 +153,11 @@ workflow ATACSEQ {
     //
     // Get mitochondrial chromosome name from genome config
     //
-    def mito_name = params.genomes && params.genome && params.genomes[params.genome] ? 
-        params.genomes[params.genome].mito_name : null
+    def mito_name = params.mito_name ?: (
+        params.genomes && params.genome && params.genomes[params.genome] && params.genomes[params.genome].containsKey('mito_name')
+            ? params.genomes[params.genome].mito_name
+            : ''
+    )
     
     //
     // SUBWORKFLOW: Uncompress and prepare reference genome files
