@@ -122,7 +122,7 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 |                 --minFragmentLength ${params.minFragmentLength} \ |
 |                 --maxFragmentLength ${params.maxFragmentLength} \ |
 |                 -b sample.filter2.bam \                           |
-|                 -o sample.filter2_as.bam \                        |
+|                 -o sample.filter2_sh.bam \                        |
 |                 --filterMetrics sample_log.txt                    |
 |                                                                   |
 | When shifting (params.shift_reads = true) is enabled, deepTools   |
@@ -132,11 +132,11 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 | Important: It also applies an fragment-length filter of 0–120 bp  |
 |            for nucleosome-free enriched ATAC.                     |
 |                                                                   |
-| Output: sample.filter2_as.bam                                     |
+| Output: sample.filter2_sh.bam                                     |
 └───────────────────────────────────────────────────────────────────┘
          │
          ▼
-    sample.filter2_as.bam 
+    sample.filter2_sh.bam 
     ├─ shifted bam
     ├─ Fragments 0-120bp (NFR)
          │
@@ -145,7 +145,7 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │  STEP 5: BAM_SORT_SAMTOOLS                                        │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
 │                                                                   │
-│  samtools sort sample.filter2.bam > sample.mLb.clN.sorted.bam     │
+│  samtools sort sample.filter2_sh.bam > sample.mLb.clN.sorted.bam  │
 │  samtools index sample.mLb.clN.sorted.bam                         │
 │                                                                   │       
 └───────────────────────────────────────────────────────────────────┘
