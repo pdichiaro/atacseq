@@ -122,7 +122,7 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 |                 --minFragmentLength ${params.minFragmentLength} \ |
 |                 --maxFragmentLength ${params.maxFragmentLength} \ |
 |                 -b sample.filter2.bam \                           |
-|                 -o sample.filter2_sh.bam \                        |
+|                 -o sample.filter2_shifted.bam \                        |
 |                 --filterMetrics sample_log.txt                    |
 |                                                                   |
 | When shifting (params.shift_reads = true) is enabled, deepTools   |
@@ -136,7 +136,7 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 └───────────────────────────────────────────────────────────────────┘
          │
          ▼
-    sample.filter2_sh.bam 
+    sample.filter2_shifted.bam 
     ├─ shifted bam
     ├─ Fragments 0-120bp (NFR)
          │
@@ -145,8 +145,9 @@ This document provides a synthetic overview of the complete BAM filtering pipeli
 │  STEP 5: BAM_SORT_SAMTOOLS                                        │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
 │                                                                   │
-│  samtools sort sample.filter2_sh.bam > sample.mLb.clN.sorted.bam  │
-│  samtools index sample.mLb.clN.sorted.bam                         │
+│  samtools sort sample.filter2_shifted.bam >                       |
+|                sample.mLb.clN.shifted.sorted.bam                  │
+│  samtools index sample.mLb.clN.shifyed.sorted.bam                 │
 │                                                                   │       
 └───────────────────────────────────────────────────────────────────┘
 ```
@@ -157,8 +158,8 @@ sample.mLb.mkD.sorted.bam (if params.save_align_intermeds=true)
     ├─ All aligned reads
     ├─ FLAG 0x0400 on duplicates
 
-sample.mLb.clN.sorted.bam
-    ├─ Final filtered output
+sample.mLb.clN.shifted.sorted.bam
+    ├─ Final filtered output 
 
 ---
 ## 🔑 Key SAMtools Commands
