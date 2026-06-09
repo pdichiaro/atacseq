@@ -310,7 +310,6 @@ workflow ATACSEQ {
 
     ch_qc_bam = BAM_FILTER_SUBWF.out.bam 
     ch_qc_bai = BAM_FILTER_SUBWF.out.bai 
-    ch_qc_csi = BAM_FILTER_SUBWF.out.csi 
     ch_qc_flagstat = BAM_FILTER_SUBWF.out.flagstat
 
     //
