@@ -303,6 +303,16 @@ workflow ATACSEQ {
     )
     ch_versions = ch_versions.mix(BAM_FILTER_SUBWF.out.versions.first().ifEmpty(null))
 
+    // 
+    // Keep the filtered, unshifted BAM for QC metrics. 
+    // Picard CollectMultipleMetrics should run on this BAM, not on the shifted BAM. 
+    //
+
+    ch_qc_bam = BAM_FILTER_SUBWF.out.bam 
+    ch_qc_bai = BAM_FILTER_SUBWF.out.bai 
+    ch_qc_csi = BAM_FILTER_SUBWF.out.csi 
+    ch_qc_flagstat = BAM_FILTER_SUBWF.out.flagstat
+
     //
     // SUBWORKFLOW: Shift reads to account for Tn5 binding offset (+4/-5 bp)
     //
@@ -351,7 +361,7 @@ workflow ATACSEQ {
     ch_picardcollectmultiplemetrics_multiqc = Channel.empty()
     if (!params.skip_picard_metrics) {
         PICARD_COLLECTMULTIPLEMETRICS (
-            ch_final_bam,
+            ch_qc_bam,
             PREPARE_GENOME.out.fasta,
             []
         )
