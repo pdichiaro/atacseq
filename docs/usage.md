@@ -288,3 +288,13 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 | `--bamtools_filter_pe_config` | `assets/bamtools_filter_pe.json` | Paired-end BAM filtering config |
 | `--bamtools_filter_se_config` | `assets/bamtools_filter_se.json` | Single-end BAM filtering config |
 
+
+#### Acknowledgements
+This pipeline was developed using the nf-core framework and includes modules/components adapted from nf-core pipelines.
+
+The QC/invariant-gene normalization strategy was conceptually adapted from OmniNorm; the OmniNorm library is not directly imported or executed in this workflow.
+
+Please cite:
+Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. *Nature Biotechnology*. 2020;38(3):276–278. doi: 10.1038/s41587-020-0439-x.
+
+Gualdrini F. OmniNorm: Robust normalization of numerical matrices using skewed mixture models. GitHub repository: https://github.com/fgualdr/OmniNorm
