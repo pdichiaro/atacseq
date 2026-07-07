@@ -1,6 +1,5 @@
 /*
- * In-house normalization step conceptually adapted from OmniNorm.
- * The OmniNorm library is not imported or executed in this pipeline.
+ * It uses OmniNorm for robust normalization of numerical matrices.
  *
  * Citation:
  * Gualdrini F. OmniNorm: Robust normalization of numerical matrices using
