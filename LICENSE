@@ -22,5 +22,5 @@ SOFTWARE.
 
 ---
 
-This pipeline is adapted from the nf-core/chipseq framework, which is also 
+This pipeline is adapted from the nf-core/atacseq framework, which is also 
 released under the MIT License. Original work: https://github.com/nf-core/atacseq
