@@ -175,7 +175,7 @@ By default, the pipeline generates **two types of BigWig coverage tracks**:
    - To skip: `--skip_deeptools_norm true`
 
 The `--normalization_method` parameter controls DESeq2 normalization:
-- `invariant_genes` - Normalization using stable genes (adapted from OmniNorm: https://github.com/fgualdr/OmniNorm)
+- `invariant_genes` - Normalization using stable genes (it uses OmniNorm: https://github.com/fgualdr/OmniNorm)
 - `all_genes` - Standard DESeq2 normalization (default)
 - `all_genes,invariant_genes` - Run both methods
 
@@ -292,7 +292,7 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 #### Acknowledgements
 This pipeline was developed using the nf-core framework and includes modules/components adapted from nf-core pipelines.
 
-The QC/invariant-gene normalization strategy was conceptually adapted from OmniNorm; the OmniNorm library is not directly imported or executed in this workflow.
+The QC/invariant-gene normalization step uses OmniNorm for robust normalization of numerical matrices.
 
 Please cite:
 Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. *Nature Biotechnology*. 2020;38(3):276–278. doi: 10.1038/s41587-020-0439-x.
