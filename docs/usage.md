@@ -5,8 +5,8 @@
 This ATAC-seq pipeline uses **Bowtie2** for alignment and **MACS2** for peak calling:
 
 - **Bowtie2 Alignment**: 
-  - Local alignment mode (`--local --very-sensitive-local`) for adapter soft-clipping
-  - Two-stage fragment filtering for paired-end data (see [BOWTIE2_AND_BAM_FILTERING.md](BOWTIE2_AND_BAM_FILTERING.md))
+  - End-to-end alignment mode using Bowtie2 `--very-sensitive`.
+  - Two-stage fragment filtering for paired-end data (see [BAM_FILTER_summary.md](BAM_FILTER_summary.md))
   - Configurable fragment size filtering with `--insert_size` (default: 500bp)
   
 - **MACS2 Peak Calling**:
@@ -15,16 +15,6 @@ This ATAC-seq pipeline uses **Bowtie2** for alignment and **MACS2** for peak cal
   - For PE data: Uses actual fragment sizes from BAM files
 
 ## Quick Start
-
-### Standard ATAC-seq Analysis with Input Controls
-```bash
-nextflow run pdichiaro/atacseq \
-    --input samplesheet.csv \
-    --outdir results \
-    --genome GRCh38 \
-    --with_inputs true \
-    -profile singularity
-```
 
 ### ATAC-seq Analysis without Input Controls
 ```bash
@@ -59,32 +49,20 @@ You will need to create a samplesheet with information about the samples you wou
 | `fastq_1` | Yes | Path to Read 1 FASTQ file (`.fastq.gz` or `.fq.gz`) |
 | `fastq_2` | For PE | Path to Read 2 FASTQ file (leave empty for single-end) |
 | `replicate` | Yes | Replicate number (integer: 1, 2, 3, ...) |
-| `antibody` | For ATAC | Antibody/target name (empty for input samples) |
-| `control` | For ATAC | Name of the control/input sample to use |
-| `control_replicate` | For ATAC | Replicate number of the control sample to use |
+| `antibody` | For ATAC | Write always ATAC |
+| `control` | NO | Name of the control/input sample to use if needed |
+| `control_replicate` | NO | Replicate number of the control sample to use if needed |
 
-### With Input Controls (Paired-End)
-
-This is the standard format for ATAC-seq experiments with input controls:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
-WT_BCATENIN_IP,IP_rep1_R1.fastq.gz,IP_rep1_R2.fastq.gz,1,BCATENIN,WT_INPUT,1
-WT_BCATENIN_IP,IP_rep2_R1.fastq.gz,IP_rep2_R2.fastq.gz,2,BCATENIN,WT_INPUT,2
-WT_INPUT,input_rep1_R1.fastq.gz,input_rep1_R2.fastq.gz,1,,,
-WT_INPUT,input_rep2_R1.fastq.gz,input_rep2_R2.fastq.gz,2,,,
-```
-
-### With Input Controls (Single-End)
+### Without Input Controls (Single-End)
 
 For single-end sequencing, leave the `fastq_2` column empty:
 
 ```csv title="samplesheet.csv"
 sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
-WT_BCATENIN_IP,IP_rep1_R1.fastq.gz,,1,BCATENIN,WT_INPUT,1
-WT_BCATENIN_IP,IP_rep2_R1.fastq.gz,,2,BCATENIN,WT_INPUT,2
-WT_INPUT,input_rep1_R1.fastq.gz,,1,,,
-WT_INPUT,input_rep2_R1.fastq.gz,,2,,,
+CONTROL,AEG588A1_S1_L002_R1_001.fastq.gz,,1,ATAC,,
+CONTROL,AEG588A2_S2_L002_R1_001.fastq.gz,,2,ATAC,,	
+TREATMENT,AEG588A4_S4_L003_R1_001.fastq.gz,,1,ATAC,,		
+TREATMENT,AEG588A5_S5_L003_R1_001.fastq.gz,,2,ATAC,,	
 ```
 
 ### Without Input Controls
@@ -93,9 +71,10 @@ If you don't have input controls, leave `antibody`, `control`, and `control_repl
 
 ```csv title="samplesheet.csv"
 sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
-SAMPLE1_H3K27ac,sample1_rep1_R1.fastq.gz,sample1_rep1_R2.fastq.gz,1,,,
-SAMPLE1_H3K27ac,sample1_rep2_R1.fastq.gz,sample1_rep2_R2.fastq.gz,2,,,
-SAMPLE2_H3K4me3,sample2_rep1_R1.fastq.gz,sample2_rep1_R2.fastq.gz,1,,,
+CONTROL,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,1,ATAC,,
+CONTROL,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,2,ATAC,,	
+TREATMENT,AEG588A4_S4_L003_R1_001.fastq.gz,AEG588A4_S4_L003_R2_001.fastq.gz,1,ATAC,,		
+TREATMENT,AEG588A5_S5_L003_R1_001.fastq.gz,AEG588A5_S5_L003_R2_001.fastq.gz,2,ATAC,,
 ```
 
 > **Note:** Set `--with_inputs false` when running without input controls.
@@ -106,16 +85,14 @@ The pipeline automatically merges multiple technical replicates (same sample, di
 
 ```csv title="samplesheet.csv"
 sample,fastq_1,fastq_2,replicate,antibody,control,control_replicate
-SAMPLE1_BCATENIN,run1_R1.fastq.gz,run1_R2.fastq.gz,1,BCATENIN,INPUT,1
-SAMPLE1_BCATENIN,run2_R1.fastq.gz,run2_R2.fastq.gz,1,BCATENIN,INPUT,1
-SAMPLE1_BCATENIN,run3_R1.fastq.gz,run3_R2.fastq.gz,2,BCATENIN,INPUT,2
-INPUT,input_rep1_R1.fastq.gz,input_rep1_R2.fastq.gz,1,,,
-INPUT,input_rep2_R1.fastq.gz,input_rep2_R2.fastq.gz,2,,,
+SAMPLE1,run1_R1.fastq.gz,run1_R2.fastq.gz,1,ATAC,,
+SAMPLE1,run2_R1.fastq.gz,run2_R2.fastq.gz,1,ATAC,,
+SAMPLE2,run3_R1.fastq.gz,run3_R2.fastq.gz,2,ATAC,,
 ```
 
 In this example:
-- Replicate 1 has 2 technical replicates (run1 and run2) → merged as `SAMPLE1_BCATENIN_REP1`
-- Replicate 2 has 1 technical replicate (run3) → becomes `SAMPLE1_BCATENIN_REP2`
+- Replicate 1 has 2 technical replicates (run1 and run2) → merged as `SAMPLE1_REP1`
+- Replicate 2 has 1 technical replicate (run3) → becomes `SAMPLE2_REP2`
 
 ### Important Notes
 
@@ -147,14 +124,14 @@ In this example:
 
 | Category | Parameter | Default | Description |
 |----------|-----------|---------|-------------|
-| **ATAC-seq** | `--with_inputs` | `true` | Use input control samples |
-| | `--aligner` | `star` | Alignment method (star only) |
+| **ATAC-seq** | `--with_inputs` | `false` | Use input control samples |
+| | `--aligner` | `bowtie2` | Alignment method (bowtie2 only) |
 | | `--read_length` | `50` | Read length for MACS2 gsize |
 | | `--fragment_size` | `200` | Estimated fragment size (SE) |
 | **Peak Calling** | `--macs_gsize` | `null` | MACS2 genome size (auto-calculated) |
 | | `--blacklist` | `null` | Regions to exclude from analysis |
 | **Normalization** | `--skip_deeptools_norm` | `false` | Skip DESeq2 normalization |
-| | `--normalization_method` | `invariant_genes` | Normalization method |
+| | `--normalization_method` | `all_genes` | Normalization method |
 | **Quality** | `--skip_trimming` | `false` | Skip read trimming |
 | | `--skip_fastqc` | `false` | Skip FastQC reports |
 | | `--skip_qc` | `false` | Skip all QC steps |
@@ -186,8 +163,8 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 - `--skip_picard_metrics` - Skip Picard QC metrics
 - `--skip_plot_fingerprint` - Skip deepTools fingerprint plot
 - `--skip_plot_profile` - Skip deepTools profile plots
-- `--skip_peak_annotation` - Skip HOMER peak annotation
-- `--skip_peak_qc` - Skip peak QC plots
+- `--skip_spp` - Skip Phantompeakqualtools (strand cross-correlation)
+- `--skip_preseq` - Skip Preseq library complexity analysis
 - `--skip_multiqc` - Skip MultiQC report
 
 ### Reference Genome Options
@@ -221,29 +198,33 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--aligner` | `bowtie2` | Alignment tool (fixed to bowtie2) |
-| `--bowtie2_mode` | `--local` | Bowtie2 alignment mode (local vs end-to-end) |
-| `--bowtie2_sensitivity` | `--very-sensitive-local` | Bowtie2 sensitivity preset |
+| `--aligner` | `bowtie2` | Alignment tool |
+| | | *Bowtie2 runs in `--very-sensitive --end-to-end` mode (hardcoded in modules.config)* |
 | `--insert_size` | `500` | **Max fragment size for BAM filtering (PE only)** |
 | `--keep_dups` | `false` | Keep duplicate reads |
 | `--keep_multi_map` | `false` | Keep multimapping reads |
 | `--keep_blacklist` | `false` | Keep blacklist regions (false = remove) |
+| `--shift_reads` | `true` | Apply ATAC-seq Tn5 offset correction using `alignmentSieve --ATACshift` (+4/-5 bp) | 
+| `--minFragmentLength` | `0` | Minimum fragment length retained during read shifting (`0` means no minimum fragment-length filter) | 
+| `--maxFragmentLength` | `0` | Maximum fragment length retained during read shifting (use `100–120` for NFR-focused analyses |
 | `--save_align_intermeds` | `false` | Save intermediate BAM files |
 | `--save_unaligned` | `false` | Save unaligned reads |
 
-**Note:** For Paired-End data, Bowtie2 uses a fixed `-X 1000` during alignment to search for fragments up to 1000bp. Post-alignment filtering with `--insert_size` (default 500bp) removes artifacts while keeping biologically relevant fragments. See [BOWTIE2_AND_BAM_FILTERING.md](BOWTIE2_AND_BAM_FILTERING.md) for details.
+**Note:** For Paired-End data, Bowtie2 uses a fixed `-X 1000` during alignment to search for fragments up to 1000bp. Post-alignment filtering with `--insert_size` (default 500bp) removes artifacts while keeping biologically relevant fragments. See [BAM_FILTER_summary.md](BAM_FILTER_summary.md) for details.
 
 #### Peak Calling Options (MACS2)
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--narrow_peak` | `true` | Call narrow peaks (vs broad) |
-| `--broad_cutoff` | `0.1` | Broad peak FDR cutoff |
+| `--narrow_peak` | `true` | Call narrow peaks |
 | `--macs_fdr` | `null` | MACS2 FDR threshold (q-value) |
 | `--macs_pvalue` | `null` | MACS2 p-value threshold |
 | `--macs_gsize` | `null` | **Effective genome size for MACS2 model building** |
 | `--min_reps_consensus` | `1` | Min replicates for consensus peaks |
 | `--save_macs_pileup` | `false` | Save MACS2 pileup tracks |
+| `--skip_peak_qc` | `false` | Skip peak QC plots |
+| `--skip_peak_annotation` | `false` | Skip HOMER peak annotation |
+| `--skip_consensus_peaks` | `false` | Skip consensus peak generation, annotation and counting |
 
 **MACS2 Fragment Length Strategy:**
 - **Default behavior** (`--macs_gsize` not set):
@@ -268,14 +249,6 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 | `--n_pop` | `1` | Min samples for DESeq2 analysis |
 | `--deseq2_vst` | `true` | Use VST transformation |
 | `--skip_deseq2_qc` | `false` | Skip DESeq2 QC plots |
-
-#### Quality Control Options
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `--fingerprint_bins` | `500000` | Bins for deepTools fingerprint |
-| `--skip_preseq` | `false` | Skip library complexity analysis |
-| `--skip_spp` | `false` | Skip strand cross-correlation QC |
 
 #### Other Advanced Options
 
