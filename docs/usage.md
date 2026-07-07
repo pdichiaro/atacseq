@@ -204,6 +204,8 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 | `--keep_dups` | `false` | Keep duplicate reads |
 | `--keep_multi_map` | `false` | Keep multimapping reads |
 | `--keep_blacklist` | `false` | Keep blacklist regions (false = remove) |
+| `--keep_mito` | `false` | Keep mitochondrial reads (false = remove) |
+| '--mito_name' |  'chrM' | standard name for human genome |
 | `--shift_reads` | `true` | Apply ATAC-seq Tn5 offset correction using `alignmentSieve --ATACshift` (+4/-5 bp) | 
 | `--minFragmentLength` | `0` | Minimum fragment length retained during read shifting (`0` means no minimum fragment-length filter) | 
 | `--maxFragmentLength` | `0` | Maximum fragment length retained during read shifting (use `100–120` for NFR-focused analyses |
