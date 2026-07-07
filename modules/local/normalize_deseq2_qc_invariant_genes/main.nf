@@ -1,3 +1,11 @@
+/*
+ * In-house normalization step conceptually adapted from OmniNorm.
+ * The OmniNorm library is not imported or executed in this pipeline.
+ *
+ * Citation:
+ * Gualdrini F. OmniNorm: Robust normalization of numerical matrices using
+ * skewed mixture models. GitHub repository: https://github.com/fgualdr/OmniNorm
+ */
 process NORMALIZE_DESEQ2_QC_INVARIANT_GENES {
     tag "deseq2_qc_invariant_genes"
     label "process_medium"
