@@ -175,7 +175,7 @@ The `--normalization_method` parameter controls DESeq2 normalization:
 | `--gtf` | path | Gene annotation GTF file |
 | `--gff` | path | Gene annotation GFF file (alternative to GTF) |
 | `--gene_bed` | path | Gene BED file (auto-generated if not provided) |
-| `--star_index` | path | Pre-built STAR index |
+| `--bowtie2_index` | path | Pre-built Bowtie2 index |
 | `--blacklist` | path | Blacklist regions BED file |
 | `--save_reference` | boolean | Save generated indices (default: false) |
 
